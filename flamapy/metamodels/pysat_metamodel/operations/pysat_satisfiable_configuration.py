@@ -14,7 +14,6 @@ class PySATSatisfiableConfiguration(SatisfiableConfiguration):
         self.result = False
         self.configuration = Configuration(elements={})
         self.solver = Solver(name='glucose3')
-        self.is_full = False
 
     def is_satisfiable(self) -> bool:
         return self.result
@@ -22,9 +21,8 @@ class PySATSatisfiableConfiguration(SatisfiableConfiguration):
     def get_result(self) -> bool:
         return self.is_satisfiable()
 
-    def set_configuration(self, configuration: Configuration, is_full: bool) -> None:
+    def set_configuration(self, configuration: Configuration) -> None:
         self.configuration = configuration
-        self.is_full = is_full
 
     def execute(self, model: VariabilityModel) -> 'PySATSatisfiableConfiguration':
         sat_model = cast(PySATModel, model)
@@ -32,7 +30,7 @@ class PySATSatisfiableConfiguration(SatisfiableConfiguration):
         for clause in sat_model.get_all_clauses():  # AC es conjunto de conjuntos
             self.solver.add_clause(clause)  # añadimos la constraint
 
-        if not self.is_full:
+        if not self.configuration.is_full:
             assumptions = []
             for feature, selected in self.configuration.elements.items():
                 if selected:

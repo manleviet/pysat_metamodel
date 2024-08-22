@@ -30,14 +30,32 @@ class PySATFilter(Filter):
         for clause in model.get_all_clauses():  # AC es conjunto de conjuntos
             self.solver.add_clause(clause)  # añadimos la constraint
 
-        assumptions = []
-        for feat in self.configuration.elements.items():
-            variable = model.variables.get(feat[0])
-            if variable is not None:
-                if feat[1]:
-                    assumptions.append(variable)
+        if not self.configuration.is_full:
+            assumptions = []
+            for feature, selected in self.configuration.elements.items():
+                if selected:
+                    assumptions.append(model.variables[feature])
                 else:
-                    assumptions.append(-variable)
+                    assumptions.append(-model.variables[feature])
+        else:
+            missing_features = [feature for feature in self.configuration.elements.keys() 
+                                if feature not in model.variables.keys()]
+
+            if missing_features:
+                print("The features that are missing are:", list(missing_features))
+                print("The feature model contains the following features:", 
+                      list(model.variables.keys()))
+                self.result = False
+                return self
+
+            assumptions = []
+            for feature in model.features.values():
+
+                if self.configuration.elements.get(feature, False):
+                    assumptions.append(model.variables[feature])
+                else:
+                    assumptions.append(-model.variables[feature])
+
 
         for solution in self.solver.enum_models(assumptions=assumptions):
             product = []
