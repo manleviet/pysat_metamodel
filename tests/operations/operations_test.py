@@ -70,14 +70,16 @@ def run(
     if expected_valid_product_list is not None:
         for product in expected_valid_product_list:
             valid_product = PySATSatisfiableConfiguration()
-            valid_product.set_configuration(configuration = product, is_full = True)
+            product.is_full = True
+            valid_product.set_configuration(configuration = product)
             valid_product.execute(model)
             assert valid_product.is_satisfiable()
 
     if expected_non_valid_product_list is not None:
         for product in expected_non_valid_product_list:
             valid_product = PySATSatisfiableConfiguration()
-            valid_product.set_configuration(configuration = product, is_full = True)
+            product.is_full = True
+            valid_product.set_configuration(configuration = product)
             valid_product.execute(model)
             assert not valid_product.is_satisfiable()
 

@@ -37,7 +37,7 @@ class PySATMetrics(Metrics):
     @property
     def model_type_extension(self) -> str:
         return self._model_type_extension
-    
+
     @model_type_extension.setter
     def model_type_extension(self, ext: str) -> None:
         self._model_type_extension = ext

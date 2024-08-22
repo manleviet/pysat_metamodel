@@ -24,7 +24,7 @@ class PySATFilter(Filter):
     def set_configuration(self, configuration: Configuration) -> None:
         self.configuration = configuration
 
-    def execute(self, model: VariabilityModel) -> 'PySATFilter':
+    def execute(self, model: VariabilityModel) -> 'PySATFilter':  # noqa: MC0001
         model = cast(PySATModel, model)
 
         for clause in model.get_all_clauses():  # AC es conjunto de conjuntos
@@ -40,22 +40,16 @@ class PySATFilter(Filter):
         else:
             missing_features = [feature for feature in self.configuration.elements.keys() 
                                 if feature not in model.variables.keys()]
-
             if missing_features:
-                print("The features that are missing are:", list(missing_features))
-                print("The feature model contains the following features:", 
-                      list(model.variables.keys()))
-                self.result = False
-                return self
-
+                raise ValueError("The configuration contains features that are \
+                                 not present in the feature model.",
+                                 list(missing_features))
             assumptions = []
             for feature in model.features.values():
-
                 if self.configuration.elements.get(feature, False):
                     assumptions.append(model.variables[feature])
                 else:
                     assumptions.append(-model.variables[feature])
-
 
         for solution in self.solver.enum_models(assumptions=assumptions):
             product = []
