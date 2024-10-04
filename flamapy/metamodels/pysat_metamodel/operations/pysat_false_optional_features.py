@@ -52,6 +52,6 @@ class PySATFalseOptionalFeatures(FalseOptionalFeatures):
                 assert variable is not None
                 satisfiable = self.solver.solve(assumptions=[parent_variable, -variable])
                 if not satisfiable:
-                    result.append(feature)
+                    result.append(feature.name)
         self.solver.delete()
         return result
