@@ -168,7 +168,7 @@ class FmToPysat(ModelToModel):
         for relation in self.source_model.get_relations():
             self.add_relation(relation)
 
-        for constraint in self.source_model.get_constraints():
+        for constraint in self.source_model.get_logical_constraints():
             self.add_constraint(constraint)
 
         return self.destination_model
