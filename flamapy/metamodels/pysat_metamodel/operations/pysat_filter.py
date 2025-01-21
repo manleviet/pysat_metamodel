@@ -24,22 +24,37 @@ class PySATFilter(Filter):
     def set_configuration(self, configuration: Configuration) -> None:
         self.configuration = configuration
 
-    def execute(self, model: VariabilityModel) -> 'PySATFilter':
+    def execute(self, model: VariabilityModel) -> 'PySATFilter':  # noqa: MC0001
         model = cast(PySATModel, model)
 
         for clause in model.get_all_clauses():  # AC es conjunto de conjuntos
             self.solver.add_clause(clause)  # añadimos la constraint
 
-        assumptions = [
-            model.variables.get(feat[0].name) if feat[1]
-            else -model.variables.get(feat[0].name)
-            for feat in self.configuration.elements.items()
-        ]
+        if not self.configuration.is_full:
+            assumptions = []
+            for feature, selected in self.configuration.elements.items():
+                if selected:
+                    assumptions.append(model.variables[feature])
+                else:
+                    assumptions.append(-model.variables[feature])
+        else:
+            missing_features = [feature for feature in self.configuration.elements.keys() 
+                                if feature not in model.variables.keys()]
+            if missing_features:
+                raise ValueError("The configuration contains features that are \
+                                 not present in the feature model.",
+                                 list(missing_features))
+            assumptions = []
+            for feature in model.features.values():
+                if self.configuration.elements.get(feature, False):
+                    assumptions.append(model.variables[feature])
+                else:
+                    assumptions.append(-model.variables[feature])
 
         for solution in self.solver.enum_models(assumptions=assumptions):
             product = []
             for variable in solution:
-                if variable > 0:
+                if variable is not None and variable > 0:
                     product.append(model.features.get(variable))
             self.filter_products.append(product)
         self.solver.delete()

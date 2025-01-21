@@ -3,6 +3,7 @@ from typing import List, Dict
 from flamapy.metamodels.configuration_metamodel.models import Configuration
 
 from flamapy.metamodels.pysat_metamodel.models import PySATModel
+from flamapy.metamodels.fm_metamodel.models.feature_model import Feature
 
 
 class DiagnosisModel(PySATModel):
@@ -164,24 +165,31 @@ class DiagnosisModel(PySATModel):
 
         return id_assumption
 
+    def _convert_keys_to_features(self, configuration: 'Configuration') -> 'Configuration':
+        new_elements = {Feature(key) if isinstance(key, str)
+                        else key: value for key, value 
+                        in configuration.elements.items()}
+        return Configuration(new_elements)
+
     def _prepare_assumptions_for_configuration(self, assumption: List[int],
                                                configuration: Configuration,
                                                id_assumption: int) -> int:
+        configuration = self._convert_keys_to_features(configuration)
         config = [feat.name for feat in configuration.elements]
         for feat in config:
             if feat not in self.variables.keys():
                 raise KeyError(f'Feature {feat} is not in the model.')
 
-        for feat in configuration.elements.items():
+        for feat, value in configuration.elements.items():
             desc = ''
             clause = []
 
-            if feat[1]:
-                desc = f'{feat[0].name} = true'
-                clause = [self.variables[feat[0].name], -1 * id_assumption]
-            elif not feat[1]:
-                desc = f'{feat[0].name} = false'
-                clause = [-1 * self.variables[feat[0].name], -1 * id_assumption]
+            if value:
+                desc = f'{feat.name} = true'
+                clause = [self.variables[feat.name], -1 * id_assumption]
+            else:
+                desc = f'{feat.name} = false'
+                clause = [-1 * self.variables[feat.name], -1 * id_assumption]
 
             assumption.append(id_assumption)
             self.set_kb.append(clause)
