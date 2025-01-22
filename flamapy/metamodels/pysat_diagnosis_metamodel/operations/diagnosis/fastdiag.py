@@ -89,7 +89,7 @@ class FastDiag:
         c1_without_delta1 = diff(set_c1, delta1)
         delta2 = self._fd(c1_without_delta1, set_c2, set_b + delta1)
 
-        logging.debug('<<< return [Δ1={Δ1} ∪ Δ2={Δ2}]')
+        logging.debug('<<< return [Δ1=%s ∪ Δ2=%s]', delta1, delta2)
 
         # return Δ1 + Δ2
         return delta1 + delta2
