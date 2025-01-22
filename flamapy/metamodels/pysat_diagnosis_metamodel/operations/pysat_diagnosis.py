@@ -31,7 +31,7 @@ class PySATDiagnosis(PySATAbstractIdentifier):
 
         set_c = model.get_c()
 
-        checker = ConsistencyChecker(self.solver_name, model.get_kb())
+        checker = ConsistencyChecker(self.solver_name, model.get_kb(), model.get_assumptions())
         parameters = FastDiagParameters(set_c, [], model.get_b())
         labeler = FastDiagLabeler(checker, parameters)
 

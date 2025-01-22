@@ -37,7 +37,7 @@ class PySATConflict(PySATAbstractIdentifier):
         # reverse the list to get the correct order of constraints in the diagnosis messages
         #     C.reverse()
 
-        checker = ConsistencyChecker(self.solver_name, model.get_kb())
+        checker = ConsistencyChecker(self.solver_name, model.get_kb(), model.get_assumptions())
         parameters = QuickXPlainParameters(set_c, [], model.get_b())
         labeler = QuickXPlainLabeler(checker, parameters)
 

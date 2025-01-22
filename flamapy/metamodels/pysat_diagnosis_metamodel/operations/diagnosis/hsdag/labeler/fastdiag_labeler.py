@@ -43,7 +43,7 @@ class FastDiagLabeler(FastDiag, IHSLabelable):
         neg_c = [-1 * item for item in parameters.set_c]
         if len(parameters.set_c) >= 1 \
                 and (len(parameters.set_b) == 0
-                     or self.checker.is_consistent(parameters.set_b + neg_c, [])):
+                     or self.checker.is_consistent(parameters.set_b + neg_c)):
 
             diag = self.find_diagnosis(parameters.set_c, parameters.set_b)
             if len(diag) != 0:

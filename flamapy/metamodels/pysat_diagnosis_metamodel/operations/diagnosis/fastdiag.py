@@ -37,7 +37,7 @@ class FastDiag:
         # print(f'fastDiag [C={C}, B={B}]')
 
         # if isEmpty(C) or consistent(B U C) return Φ
-        if len(set_c) == 0 or self.checker.is_consistent(set_b + set_c, []):
+        if len(set_c) == 0 or self.checker.is_consistent(set_b + set_c):
             logging.debug('return Φ')
             # print('return Φ')
             return []
@@ -71,7 +71,7 @@ class FastDiag:
         logging.debug('>>> FD [Δ=%s, C=%s, B=%s]', delta, set_c, set_b)
 
         # if Δ != Φ and consistent(B U C) return C;
-        if len(delta) != 0 and self.checker.is_consistent(set_b + set_c, delta):
+        if len(delta) != 0 and self.checker.is_consistent(set_b + set_c):
             logging.debug('<<< return %s', set_c)
             return set_c
 

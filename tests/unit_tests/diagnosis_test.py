@@ -2,16 +2,16 @@ import unittest
 
 from flamapy.metamodels.configuration_metamodel.transformations import ConfigurationBasicReader
 from flamapy.metamodels.fm_metamodel.transformations import FeatureIDEReader
-from flamapy.metamodels.pysat_diagnosis_metamodel.transformations import FmToDiagPysat
 
 from flamapy.metamodels.pysat_diagnosis_metamodel.operations import PySATDiagnosis, PySATConflict
+from flamapy.metamodels.pysat_diagnosis_metamodel.transformations import FmToDiagPysat
 
 
 def test_fastdiag_all():
     """
     Identify all diagnoses
     """
-    feature_model = FeatureIDEReader("./tests/resources/smartwatch_inconsistent.fide").transform()
+    feature_model = FeatureIDEReader("../resources/smartwatch_inconsistent.fide").transform()
     model = FmToDiagPysat(feature_model).transform()
 
     hsdag_fastdiag = PySATDiagnosis()
@@ -27,7 +27,7 @@ def test_fastdiag_one():
     """
     Identify one diagnosis
     """
-    feature_model = FeatureIDEReader("./tests/resources/smartwatch_inconsistent.fide").transform()
+    feature_model = FeatureIDEReader("../resources/smartwatch_inconsistent.fide").transform()
     model = FmToDiagPysat(feature_model).transform()
 
     hsdag_fastdiag = PySATDiagnosis()
@@ -44,7 +44,7 @@ def test_fastdiag_two():
     """
     Identify two diagnoses
     """
-    feature_model = FeatureIDEReader("./tests/resources/smartwatch_inconsistent.fide").transform()
+    feature_model = FeatureIDEReader("../resources/smartwatch_inconsistent.fide").transform()
     model = FmToDiagPysat(feature_model).transform()
 
     hsdag_fastdiag = PySATDiagnosis()
@@ -58,7 +58,7 @@ def test_fastdiag_two():
 
 
 def test_quickxplain_all():
-    feature_model = FeatureIDEReader("./tests/resources/smartwatch_inconsistent.fide").transform()
+    feature_model = FeatureIDEReader("../resources/smartwatch_inconsistent.fide").transform()
 
     model = FmToDiagPysat(feature_model).transform()
 
@@ -73,7 +73,7 @@ def test_quickxplain_all():
 
 
 def test_quickxplain_one():
-    feature_model = FeatureIDEReader("./tests/resources/smartwatch_inconsistent.fide").transform()
+    feature_model = FeatureIDEReader("../resources/smartwatch_inconsistent.fide").transform()
     model = FmToDiagPysat(feature_model).transform()
     hsdag_quickxplain = PySATConflict()
     hsdag_quickxplain.max_conflicts = 1
@@ -87,7 +87,7 @@ def test_quickxplain_one():
 
 
 def test_quickxplain_two():
-    feature_model = FeatureIDEReader("./tests/resources/smartwatch_inconsistent.fide").transform()
+    feature_model = FeatureIDEReader("../resources/smartwatch_inconsistent.fide").transform()
     model = FmToDiagPysat(feature_model).transform()
 
     hsdag_quickxplain = PySATConflict()
@@ -102,9 +102,9 @@ def test_quickxplain_two():
 
 
 def test_fastdiag_with_configuration():
-    feature_model = FeatureIDEReader("./tests/resources/smartwatch_consistent.fide").transform()
+    feature_model = FeatureIDEReader("../resources/smartwatch_consistent.fide").transform()
     model = FmToDiagPysat(feature_model).transform()
-    configuration = ConfigurationBasicReader("./tests/resources/smartwatch_nonvalid.csvconf").transform()
+    configuration = ConfigurationBasicReader("../resources/smartwatch_nonvalid.csvconf").transform()
     print( "kb:"+ str(model.get_kb()))
 
     hsdag_fastdiag = PySATDiagnosis()
@@ -122,10 +122,10 @@ def test_fastdiag_with_configuration():
 
 
 def test_quickxplain_with_configuration():
-    feature_model = FeatureIDEReader("./tests/resources/smartwatch_consistent.fide").transform()
+    feature_model = FeatureIDEReader("../resources/smartwatch_consistent.fide").transform()
     model = FmToDiagPysat(feature_model).transform()
 
-    configuration = ConfigurationBasicReader("./tests/resources/smartwatch_nonvalid.csvconf").transform()
+    configuration = ConfigurationBasicReader("../resources/smartwatch_nonvalid.csvconf").transform()
 
     hsdag_quickxplain = PySATConflict()
     hsdag_quickxplain.set_configuration(configuration)
@@ -137,10 +137,10 @@ def test_quickxplain_with_configuration():
 
 
 def test_fastdiag_with_test_case():
-    feature_model = FeatureIDEReader("./tests/resources/smartwatch_deadfeature.fide").transform()
+    feature_model = FeatureIDEReader("../resources/smartwatch_deadfeature.fide").transform()
     model = FmToDiagPysat(feature_model).transform()
 
-    test_case = ConfigurationBasicReader("./tests/resources/smartwatch_testcase.csvconf").transform()
+    test_case = ConfigurationBasicReader("../resources/smartwatch_testcase.csvconf").transform()
 
     hsdag_fastdiag = PySATDiagnosis()
     hsdag_fastdiag.set_test_case(test_case)
@@ -155,10 +155,10 @@ def test_fastdiag_with_test_case():
 
 
 def test_quickxplain_with_testcase():
-    feature_model = FeatureIDEReader("./tests/resources/smartwatch_deadfeature.fide").transform()
+    feature_model = FeatureIDEReader("../resources/smartwatch_deadfeature.fide").transform()
     model = FmToDiagPysat(feature_model).transform()
 
-    test_case = ConfigurationBasicReader("./tests/resources/smartwatch_testcase.csvconf").transform()
+    test_case = ConfigurationBasicReader("../resources/smartwatch_testcase.csvconf").transform()
 
     hsdag_quickxplain = PySATConflict()
     hsdag_quickxplain.set_test_case(test_case)

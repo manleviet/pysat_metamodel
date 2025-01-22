@@ -1,9 +1,9 @@
 from typing import List, Dict
 
 from flamapy.metamodels.configuration_metamodel.models import Configuration
+from flamapy.metamodels.fm_metamodel.models.feature_model import Feature
 
 from flamapy.metamodels.pysat_metamodel.models import PySATModel
-from flamapy.metamodels.fm_metamodel.models.feature_model import Feature
 
 
 class DiagnosisModel(PySATModel):
@@ -44,6 +44,8 @@ class DiagnosisModel(PySATModel):
         self.constraint_map: Dict[str, List[List[int]]] = {}
         # map id of assumptions to relationships/constraint
         self.constraint_assumption_map: Dict[int, str] = {}
+        # list of assumptions
+        self.assumptions: List[int] = []
 
     def add_clause_to_map(self, description: str, clauses: List[List[int]]) -> None:
         self.constraint_map[description] = clauses
@@ -56,6 +58,9 @@ class DiagnosisModel(PySATModel):
 
     def get_kb(self) -> List[List[int]]:
         return self.set_kb
+
+    def get_assumptions(self) -> List[int]:
+        return self.assumptions
 
     def get_pretty_diagnoses(self, assumptions: List[List[int]]) -> str:
         diagnoses = []
@@ -116,33 +121,33 @@ class DiagnosisModel(PySATModel):
 
     def _prepare_assumptions(self, configuration: Configuration = None,
                              test_case: Configuration = None) -> None:
-        assumption: List[int] = []
+        # self.assumptions: List[int] = []
 
         id_assumption = len(self.variables) + 1
-        id_assumption = self._prepare_assumptions_for_kb(assumption, id_assumption)
+        id_assumption = self._prepare_assumptions_for_kb(self.assumptions, id_assumption)
 
-        start_id_configuration = len(assumption)
+        start_id_configuration = len(self.assumptions)
         if configuration is not None:
             self.constraint_assumption_map = {}  # reset the map
-            id_assumption = self._prepare_assumptions_for_configuration(assumption,
+            id_assumption = self._prepare_assumptions_for_configuration(self.assumptions,
                                                                         configuration,
                                                                         id_assumption)
 
-        start_id_test_case = len(assumption)
+        start_id_test_case = len(self.assumptions)
         if test_case is not None:
-            self._prepare_assumptions_for_configuration(assumption, test_case,
+            self._prepare_assumptions_for_configuration(self.assumptions, test_case,
                                                         id_assumption)
 
         if configuration is not None:
-            self.set_b = assumption[:start_id_configuration]
-            self.set_c = assumption[start_id_configuration:]
+            self.set_b = self.assumptions[:start_id_configuration]
+            self.set_c = self.assumptions[start_id_configuration:]
         else:
             if test_case is not None:
-                self.set_b = [assumption[0]] + assumption[start_id_test_case:]
-                self.set_c = assumption[1:start_id_test_case]
+                self.set_b = [self.assumptions[0]] + self.assumptions[start_id_test_case:]
+                self.set_c = self.assumptions[1:start_id_test_case]
             else:
-                self.set_b = [assumption[0]]
-                self.set_c = assumption[1:]
+                self.set_b = [self.assumptions[0]]
+                self.set_c = self.assumptions[1:]
 
     def _prepare_assumptions_for_kb(self, assumption: List[int], id_assumption: int) -> int:
         cstr_map = self.constraint_map
